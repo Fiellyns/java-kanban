@@ -19,22 +19,22 @@ import ru.yandex.practicum.tasks.Status;
             Subtask subtask3 = manager.createSubTask(new Subtask("Купить корм", "Royal Canin, до 6 месяцев", epic2.getId()));
 
             // Вывод всего
-            manager.printAllTasks();
-            manager.printAllEpics();
-            manager.printAllSubtasks();
+
+            System.out.println(manager.getTaskList());
+            System.out.println(manager.getEpicList());
+            System.out.println(manager.getSubTaskList());
 
 
             // Обновления статусов
             System.out.println("Производится обновление статусов...");
             subtask1.setStatus(Status.IN_PROGRESS);
-            manager.updateTask(subtask1);
-
-
-            subtask3.setStatus(Status.DONE);
-            manager.updateSubtask(subtask3);
+            manager.updateSubtask(subtask1);
 
             subtask2.setStatus(Status.DONE);
             manager.updateSubtask(subtask2);
+
+            subtask3.setStatus(Status.DONE);
+            manager.updateSubtask(subtask3);
 
             task1.setStatus(Status.IN_PROGRESS);
             manager.updateTask(task1);
@@ -45,20 +45,33 @@ import ru.yandex.practicum.tasks.Status;
             System.out.println("Обновление статусов завершено.");
 
             // Вывод всего
-            manager.printAllTasks();
-            manager.printAllEpics();
-            manager.printAllSubtasks();
+            System.out.println(manager.getTaskList());
+            System.out.println(manager.getEpicList());
+            System.out.println(manager.getSubTaskList());
 
-            //Удаление таска
-            manager.deleteTask(task1.getId());
-            //Удаление эпика
-            manager.deleteEpic(epic1.getId());
-            //Удаление всего
-            manager.deleteAllTasksEpicsSubtasks();
+            // Удаление таска
+            manager.deleteTaskById(task1.getId());
+            System.out.println("Удаление таска");
+            // Удаление эпика
+            manager.deleteEpicById(epic1.getId());
+            System.out.println("Удаление эпика");
 
             // Вывод всего
-            manager.printAllTasks();
-            manager.printAllEpics();
-            manager.printAllSubtasks();
+            System.out.println(manager.getTaskList());
+            System.out.println(manager.getEpicList());
+            System.out.println(manager.getSubTaskList());
+
+            // Удаление всех тасков
+            manager.deleteTasks();
+            // Удаление всех эпиков
+            manager.deleteEpics();
+            // Удаление всех сабтасков
+            manager.deleteSubTasks();
+            System.out.println("Все типы задач удалены");
+
+            // Вывод всего
+            System.out.println(manager.getTaskList());
+            System.out.println(manager.getEpicList());
+            System.out.println(manager.getSubTaskList());
         }
     }
