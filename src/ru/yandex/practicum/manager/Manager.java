@@ -85,12 +85,24 @@ public class Manager {
 
     // удаление всех сабтасков
     public void deleteSubTasks() {
-        subtaskHashMap.clear();
+        // Если я правильно понял, то метод должен быть таким
+        for (Subtask sub : subtaskHashMap.values()) {
+            Subtask subtask = subtaskHashMap.get(sub.getId());
+            if (subtask != null) {
+                Epic epic = epicHashMap.get(subtask.getEpicID());
+                if (epic != null) {
+                    epic.getSubtasks().clear(); // очищается список сабтасков в эпике
+                    updateEpicStatus(subtask.getEpicID()); // по итогу, ставится статус эпику NEW
+                }
+            }
+        }
+        subtaskHashMap.clear(); // очищается мапа
     }
 
     // удаление всех эпиков
     public void deleteEpics() {
         epicHashMap.clear();
+        subtaskHashMap.clear();
     }
 
     // удаление задачи по идентификатору
@@ -150,21 +162,23 @@ public class Manager {
             epic.setStatus(Status.NEW);
             return;
         }
+
         for (Integer taskId : epic.getSubtasks()) {
-            if (subtaskHashMap.get(taskId).getStatus() == Status.NEW) {
+
+            if (subtaskHashMap.get(taskId).getStatus() == Status.IN_PROGRESS) {
+                epic.setStatus(Status.IN_PROGRESS);
+                return;
+            } else if (subtaskHashMap.get(taskId).getStatus() == Status.NEW) {
                 isNew++;
             } else if (subtaskHashMap.get(taskId).getStatus() == Status.DONE) {
                 isDone++;
             }
         }
+
         if (epic.getSubtasks().size() == isNew) {
             epic.setStatus(Status.NEW);
-            return;
         } else if (epic.getSubtasks().size() == isDone) {
             epic.setStatus(Status.DONE);
-            return;
         }
-        epic.setStatus(Status.IN_PROGRESS);
     }
-
 }

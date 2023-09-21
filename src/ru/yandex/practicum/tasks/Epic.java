@@ -1,8 +1,6 @@
 package ru.yandex.practicum.tasks;
 
 import java.util.ArrayList;
-
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {

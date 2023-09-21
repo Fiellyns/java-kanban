@@ -49,29 +49,29 @@ import ru.yandex.practicum.tasks.Status;
             System.out.println(manager.getEpicList());
             System.out.println(manager.getSubTaskList());
 
-            // Удаление таска
-            manager.deleteTaskById(task1.getId());
-            System.out.println("Удаление таска");
-            // Удаление эпика
-            manager.deleteEpicById(epic1.getId());
-            System.out.println("Удаление эпика");
+            // Удаление тасков
+            manager.deleteTasks();
+            System.out.println("Все задачи удалены");
+
 
             // Вывод всего
             System.out.println(manager.getTaskList());
             System.out.println(manager.getEpicList());
             System.out.println(manager.getSubTaskList());
 
-            // Удаление всех тасков
-            manager.deleteTasks();
-            // Удаление всех эпиков
-            manager.deleteEpics();
             // Удаление всех сабтасков
             manager.deleteSubTasks();
-            System.out.println("Все типы задач удалены");
-
-            // Вывод всего
-            System.out.println(manager.getTaskList());
+            System.out.println("Все подзадачи удалены");
             System.out.println(manager.getEpicList());
-            System.out.println(manager.getSubTaskList());
+
+
+            Subtask subtask4 = manager.createSubTask(new Subtask("Купить корм", "Royal Canin, до 6 месяцев", epic1.getId()));
+            subtask4.setStatus(Status.IN_PROGRESS);
+            manager.updateSubtask(subtask4);
+            Subtask subtask5 = manager.createSubTask(new Subtask("Купить корм", "Royal Canin, до 6 месяцев", epic2.getId()));
+            subtask5.setStatus(Status.IN_PROGRESS);
+            manager.updateSubtask(subtask5);
+            System.out.println("Добавлены новые подзадачи для эпиков.");
+            System.out.println(manager.getEpicList());
         }
     }
