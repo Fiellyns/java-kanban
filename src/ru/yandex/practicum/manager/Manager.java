@@ -86,16 +86,15 @@ public class Manager {
     // удаление всех сабтасков
     public void deleteSubTasks() {
         // Если я правильно понял, то метод должен быть таким
-        for (Subtask sub : subtaskHashMap.values()) {
-            Subtask subtask = subtaskHashMap.get(sub.getId());
-            if (subtask != null) {
-                Epic epic = epicHashMap.get(subtask.getEpicID());
-                if (epic != null) {
-                    epic.getSubtasks().clear(); // очищается список сабтасков в эпике
-                    updateEpicStatus(subtask.getEpicID()); // по итогу, ставится статус эпику NEW
-                }
-            }
+        for (Epic epic : epicHashMap.values()) {
+                epic.getSubtasks().clear();
+                updateEpicStatus(epic.getId());
         }
+//        for (Subtask sub : subtaskHashMap.values()) {
+//                Epic epic = epicHashMap.get(sub.getEpicID());
+//                epic.getSubtasks().clear(); // очищается список сабтасков в эпике
+//                updateEpicStatus(sub.getEpicID()); // по итогу, ставится статус эпику NEW
+//        }
         subtaskHashMap.clear(); // очищается мапа
     }
 
