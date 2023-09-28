@@ -26,6 +26,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int id;
 
+    // генератор ID
     public int getNextId(){
         return ++id;
     }

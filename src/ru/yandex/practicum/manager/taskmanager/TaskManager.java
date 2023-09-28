@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface TaskManager {
 
+    // генератор ID
     int getNextId();
 
 
