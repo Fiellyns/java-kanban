@@ -1,17 +1,28 @@
-package ru.yandex.practicum.manager;
+package ru.yandex.practicum.manager.taskmanager;
 
 import ru.yandex.practicum.tasks.Status;
 import ru.yandex.practicum.tasks.Task;
 import ru.yandex.practicum.tasks.Epic;
 import ru.yandex.practicum.tasks.Subtask;
+import ru.yandex.practicum.manager.Managers;
+import ru.yandex.practicum.manager.historymanager.HistoryManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class Manager {
-    private final HashMap<Integer, Task> taskHashMap = new HashMap<>();
-    private final HashMap<Integer, Epic> epicHashMap = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtaskHashMap = new HashMap<>();
+public class InMemoryTaskManager implements TaskManager {
+    private final HashMap<Integer, Task> taskHashMap;
+    private final HashMap<Integer, Epic> epicHashMap;
+    private final HashMap<Integer, Subtask> subtaskHashMap;
+    private final HistoryManager historyManager;
+
+    public InMemoryTaskManager() {
+        this.taskHashMap = new HashMap<>();
+        this.epicHashMap = new HashMap<>();
+        this.subtaskHashMap = new HashMap<>();
+        this.historyManager = Managers.getDefaultHistory();
+    }
 
     private int id;
 
@@ -21,36 +32,55 @@ public class Manager {
 
 
     // получение задач
+    @Override
     public ArrayList<Task> getTaskList() {
         return new ArrayList<>(taskHashMap.values());
     }
 
     // получение эпиков
+    @Override
     public ArrayList<Epic> getEpicList() {
         return new ArrayList<>(epicHashMap.values());
     }
 
     // получение сабтасков
+    @Override
     public ArrayList<Subtask> getSubTaskList() {
         return new ArrayList<>(subtaskHashMap.values());
     }
 
     // получение задачи по индентификатору
+    @Override
     public Task getTaskById(int idNumber) {
-        return taskHashMap.get(idNumber);
+        Task task = taskHashMap.get(idNumber);
+        historyManager.add(task);
+        return task;
     }
 
     // получение эпика по индентификатору
+    @Override
     public Epic getEpicById(int idNumber) {
-        return epicHashMap.get(idNumber);
+        Epic epic = epicHashMap.get(idNumber);
+        historyManager.add(epic);
+        return epic;
     }
 
     // получение сабтаска по индентификатору
+    @Override
     public Subtask getSubTaskById(int idNumber) {
-        return subtaskHashMap.get(idNumber);
+        Subtask subtask = subtaskHashMap.get(idNumber);
+        historyManager.add(subtask);
+        return subtask;
+    }
+
+    //получение истории
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     //создание задачи
+    @Override
     public Task createTask(Task task) {
         task.setId(getNextId());
         taskHashMap.put(task.getId(), task);
@@ -59,6 +89,7 @@ public class Manager {
     }
 
     // создание эпика
+    @Override
     public Epic createEpic(Epic epic) {
         epic.setId(getNextId());
         epicHashMap.put(epic.getId(), epic);
@@ -67,6 +98,7 @@ public class Manager {
     }
 
     // создание сабтаска
+    @Override
     public Subtask createSubTask(Subtask subtask) {
         Epic epic = epicHashMap.get(subtask.getEpicID());
 
@@ -79,32 +111,37 @@ public class Manager {
     }
 
     // удаление всех тасков
+    @Override
     public void deleteTasks() {
         taskHashMap.clear();
     }
 
     // удаление всех сабтасков
+    @Override
     public void deleteSubTasks() {
         // Если я правильно понял, то метод должен быть таким
         for (Epic epic : epicHashMap.values()) {
-                epic.getSubtasks().clear(); // очищение подзадач
-                updateEpicStatus(epic.getId()); // обновление статуса
+            epic.getSubtasks().clear(); // очищение подзадач
+            updateEpicStatus(epic.getId()); // обновление статуса
         }
         subtaskHashMap.clear(); // очищается мапа
     }
 
     // удаление всех эпиков
+    @Override
     public void deleteEpics() {
         epicHashMap.clear();
         subtaskHashMap.clear();
     }
 
     // удаление задачи по идентификатору
+    @Override
     public void deleteTaskById(int id) {
         taskHashMap.remove(id);
     }
 
     // удаление сабтаска по идентификатору
+    @Override
     public void deleteSubTaskById(int id) {
         Subtask subtask = subtaskHashMap.get(id);
         Epic epic = epicHashMap.get(subtask.getEpicID());
@@ -115,6 +152,7 @@ public class Manager {
     }
 
     // удаление эпика по идентификатору
+    @Override
     public void deleteEpicById(int epicID) {
         Epic epic = epicHashMap.get(epicID);
 
@@ -125,6 +163,7 @@ public class Manager {
     }
 
     // обновление задачи
+    @Override
     public void updateTask(Task task) {
         if (taskHashMap.containsKey(task.getId())) {
             taskHashMap.put(task.getId(), task);
@@ -132,6 +171,7 @@ public class Manager {
     }
 
     // обновление сабтаска
+    @Override
     public void updateSubtask(Subtask subtask) {
         if (subtaskHashMap.containsKey(subtask.getId())) {
             subtaskHashMap.put(subtask.getId(), subtask);
@@ -140,6 +180,7 @@ public class Manager {
     }
 
     // обновление эпика
+    @Override
     public void updateEpic(Epic epic) {
         if (epicHashMap.containsKey(epic.getId())) {
             epicHashMap.put(epic.getId(), epic);
