@@ -3,21 +3,24 @@ package ru.yandex.practicum.manager.historymanager;
 import ru.yandex.practicum.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
     private final List<Task> historyManagersList;
+    private final static int MAX_TASKS_NUMBERS = 10;
 
     public InMemoryHistoryManager () {
-        this.historyManagersList = new ArrayList<>();
+        // Мы ещё не проходили LinkedList, но воспользуюсь советом.
+        this.historyManagersList = new LinkedList<>();
     }
 
     // добавление таска
     @Override
     public void add(Task task) {
         historyManagersList.add(task);
-        if (historyManagersList.size() > 10) {
+        if (historyManagersList.size() > MAX_TASKS_NUMBERS) {
             historyManagersList.remove(0);
         }
     }
@@ -25,6 +28,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     // получение истории
     @Override
     public List<Task> getHistory() {
-        return historyManagersList;
+        return List.copyOf(historyManagersList);
     }
 }

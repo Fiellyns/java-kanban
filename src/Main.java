@@ -88,6 +88,7 @@ import ru.yandex.practicum.tasks.Status;
             taskManager.getEpicById(3);
             taskManager.getEpicById(3);
             taskManager.getEpicById(4);
+            taskManager.getTaskById(1);
             System.out.println("Просмотр завершён.");
 
             System.out.println("Вывод истории по отдельности...");

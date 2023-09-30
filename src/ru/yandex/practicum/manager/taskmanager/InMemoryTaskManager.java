@@ -8,13 +8,14 @@ import ru.yandex.practicum.manager.Managers;
 import ru.yandex.practicum.manager.historymanager.HistoryManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> taskHashMap;
-    private final HashMap<Integer, Epic> epicHashMap;
-    private final HashMap<Integer, Subtask> subtaskHashMap;
+    private final Map<Integer, Task> taskHashMap;
+    private final Map<Integer, Epic> epicHashMap;
+    private final Map<Integer, Subtask> subtaskHashMap;
     private final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
@@ -54,7 +55,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int idNumber) {
         Task task = taskHashMap.get(idNumber);
-        historyManager.add(task);
+        if (task != null) {
+            historyManager.add(task);
+        }
         return task;
     }
 
@@ -62,7 +65,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(int idNumber) {
         Epic epic = epicHashMap.get(idNumber);
-        historyManager.add(epic);
+        if (epic != null) {
+            historyManager.add(epic);
+        }
         return epic;
     }
 
@@ -70,7 +75,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubTaskById(int idNumber) {
         Subtask subtask = subtaskHashMap.get(idNumber);
-        historyManager.add(subtask);
+        if (subtask != null) {
+            historyManager.add(subtask);
+        }
         return subtask;
     }
 
