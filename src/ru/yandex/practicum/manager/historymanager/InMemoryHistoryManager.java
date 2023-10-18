@@ -2,32 +2,44 @@ package ru.yandex.practicum.manager.historymanager;
 
 import ru.yandex.practicum.tasks.Task;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private final List<Task> historyManagersList;
-    private final static int MAX_TASKS_NUMBERS = 10;
+    private final CustomLinkedList customLinkedList;
+    private final Map<Integer, Node<Task>> historyManagersMap;
 
     public InMemoryHistoryManager () {
-        // Мы ещё не проходили LinkedList, но воспользуюсь советом.
-        this.historyManagersList = new LinkedList<>();
+        customLinkedList = new CustomLinkedList();
+        historyManagersMap = new HashMap<>();
     }
 
     // добавление таска
     @Override
     public void add(Task task) {
-        historyManagersList.add(task);
-        if (historyManagersList.size() > MAX_TASKS_NUMBERS) {
-            historyManagersList.remove(0);
+        Node<Task> node = customLinkedList.linkLast(task);
+        int id = task.getId();
+
+        if (historyManagersMap.containsKey(id)) {
+            remove(id);
         }
+
+        historyManagersMap.put(id, node);
+
+    }
+
+    // очистка истории
+    @Override
+    public void remove(int id) {
+        customLinkedList.removeNode(historyManagersMap.get(id));
+        historyManagersMap.remove(id);
     }
 
     // получение истории
     @Override
     public List<Task> getHistory() {
-        return List.copyOf(historyManagersList);
+        return List.copyOf(customLinkedList.getTasks());
     }
 }

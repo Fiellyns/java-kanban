@@ -92,7 +92,6 @@ public class InMemoryTaskManager implements TaskManager {
     public Task createTask(Task task) {
         task.setId(getNextId());
         taskHashMap.put(task.getId(), task);
-
         return task;
     }
 
@@ -121,16 +120,22 @@ public class InMemoryTaskManager implements TaskManager {
     // удаление всех тасков
     @Override
     public void deleteTasks() {
+        for (Integer taskId : taskHashMap.keySet()) { // очистка из истории
+            historyManager.remove(taskId);
+        }
         taskHashMap.clear();
     }
 
     // удаление всех сабтасков
     @Override
     public void deleteSubTasks() {
-        // Если я правильно понял, то метод должен быть таким
         for (Epic epic : epicHashMap.values()) {
             epic.getSubtasks().clear(); // очищение подзадач
             updateEpicStatus(epic.getId()); // обновление статуса
+        }
+
+        for (Integer subTaskId : subtaskHashMap.keySet()) { // очистка из истории
+            historyManager.remove(subTaskId);
         }
         subtaskHashMap.clear(); // очищается мапа
     }
@@ -138,6 +143,12 @@ public class InMemoryTaskManager implements TaskManager {
     // удаление всех эпиков
     @Override
     public void deleteEpics() {
+        for (Integer subTaskId : subtaskHashMap.keySet()) { // очистка из истории
+            historyManager.remove(subTaskId);
+        }
+        for (Integer epicId : epicHashMap.keySet()) { // очистка из истории
+            historyManager.remove(epicId);
+        }
         epicHashMap.clear();
         subtaskHashMap.clear();
     }
@@ -146,6 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskById(int id) {
         taskHashMap.remove(id);
+        historyManager.remove(id); // очистка из истории
     }
 
     // удаление сабтаска по идентификатору
@@ -154,9 +166,14 @@ public class InMemoryTaskManager implements TaskManager {
         Subtask subtask = subtaskHashMap.get(id);
         Epic epic = epicHashMap.get(subtask.getEpicID());
 
+        if (subtask == null) {
+            return;
+        }
+
         epic.removeSubtask(subtask);
         subtaskHashMap.remove(id);
         updateEpicStatus(subtask.getEpicID());
+        historyManager.remove(id); // очистка из истории
     }
 
     // удаление эпика по идентификатору
@@ -164,10 +181,16 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpicById(int epicID) {
         Epic epic = epicHashMap.get(epicID);
 
+        if (epic == null) {
+            return;
+        }
+
         for (Integer taskId : epic.getSubtasks()) {
             subtaskHashMap.remove(taskId);
+            historyManager.remove(taskId);
         }
         epicHashMap.remove(epicID);
+        historyManager.remove(epicID); // очистка из истории
     }
 
     // обновление задачи

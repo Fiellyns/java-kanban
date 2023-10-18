@@ -1,4 +1,5 @@
 import ru.yandex.practicum.manager.Managers;
+import ru.yandex.practicum.manager.taskmanager.InMemoryTaskManager;
 import ru.yandex.practicum.manager.taskmanager.TaskManager;
 import ru.yandex.practicum.tasks.Task;
 import ru.yandex.practicum.tasks.Subtask;
@@ -75,25 +76,53 @@ import ru.yandex.practicum.tasks.Status;
             System.out.println("Добавлены новые подзадачи для эпиков.");
             System.out.println(taskManager.getEpicList());
 
+            // Удаление всего
+            System.out.println("Происходит удаление всех типов задач...");
+            taskManager.deleteTasks();
+            taskManager.deleteEpics();
+            taskManager.deleteSubTasks();
+
+            Task task10 = taskManager.createTask(new Task("Отдых", "поехать на море"));
+            Task task11 = taskManager.createTask(new Task("Дом", "вынести мусор"));
+
+            Epic epic11 = taskManager.createEpic(new Epic("Дом", "любимый дом"));
+            Epic epic12 = taskManager.createEpic(new Epic("Кот", "любимый кот"));
+
+            Subtask subtask11 = taskManager.createSubTask(new Subtask("Купить молоко", "3.2%", epic11.getId()));
+            Subtask subtask12 = taskManager.createSubTask(new Subtask("Купить кофе", "черный, молотый", epic11.getId()));
+            Subtask subtask13 = taskManager.createSubTask(new Subtask("Купить корм", "Royal Canin, до 6 месяцев", epic11.getId()));
+
+            System.out.println(taskManager.getTaskList());
+            System.out.println(taskManager.getEpicList());
+            System.out.println(taskManager.getSubTaskList());
+
             // get history
             System.out.println("Просматриваем задачи для истории.");
-            taskManager.getEpicById(3);
-            taskManager.getEpicById(3);
-            taskManager.getEpicById(4);
-            taskManager.getEpicById(3);
-            taskManager.getEpicById(3);
-            taskManager.getEpicById(3);
-            taskManager.getEpicById(3);
-            taskManager.getEpicById(3);
-            taskManager.getEpicById(3);
-            taskManager.getEpicById(3);
-            taskManager.getEpicById(4);
-            taskManager.getTaskById(1);
+            taskManager.getTaskById(11);
+            taskManager.getTaskById(10);
+            taskManager.getEpicById(13);
+            taskManager.getTaskById(11);
+            taskManager.getTaskById(11);
+            taskManager.getTaskById(11);
+            taskManager.getSubTaskById(14);
             System.out.println("Просмотр завершён.");
 
             System.out.println("Вывод истории по отдельности...");
             for (Task task : taskManager.getHistory()) {
                 System.out.println(task);
             }
+
+            taskManager.deleteEpics();
+
+            System.out.println("Вывод истории по отдельности...");
+            for (Task task : taskManager.getHistory()) {
+                System.out.println(task);
+            }
+
+
+            System.out.println("Проверка мап...");
+            System.out.println(taskManager.getTaskList());
+            System.out.println(taskManager.getEpicList());
+            System.out.println(taskManager.getSubTaskList());
         }
     }
