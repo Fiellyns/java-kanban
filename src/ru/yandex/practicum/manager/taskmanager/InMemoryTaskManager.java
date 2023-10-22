@@ -164,11 +164,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubTaskById(int id) {
         Subtask subtask = subtaskHashMap.get(id);
-        Epic epic = epicHashMap.get(subtask.getEpicID());
 
         if (subtask == null) {
             return;
         }
+
+        Epic epic = epicHashMap.get(subtask.getEpicID());
 
         epic.removeSubtask(subtask);
         subtaskHashMap.remove(id);

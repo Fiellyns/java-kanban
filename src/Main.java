@@ -112,7 +112,7 @@ import ru.yandex.practicum.tasks.Status;
                 System.out.println(task);
             }
 
-            taskManager.deleteEpics();
+            taskManager.deleteSubTaskById(14);
 
             System.out.println("Вывод истории по отдельности...");
             for (Task task : taskManager.getHistory()) {
