@@ -7,16 +7,13 @@ import ru.yandex.practicum.tasks.Subtask;
 import ru.yandex.practicum.manager.Managers;
 import ru.yandex.practicum.manager.historymanager.HistoryManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final Map<Integer, Task> taskHashMap;
-    private final Map<Integer, Epic> epicHashMap;
-    private final Map<Integer, Subtask> subtaskHashMap;
-    private final HistoryManager historyManager;
+    protected final Map<Integer, Task> taskHashMap;
+    protected final Map<Integer, Epic> epicHashMap;
+    protected final Map<Integer, Subtask> subtaskHashMap;
+    protected static HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         this.taskHashMap = new HashMap<>();
@@ -25,7 +22,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = Managers.getDefaultHistory();
     }
 
-    private int id;
+    protected int id;
 
     // генератор ID
     public int getNextId(){
@@ -35,20 +32,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     // получение задач
     @Override
-    public ArrayList<Task> getTaskList() {
-        return new ArrayList<>(taskHashMap.values());
+    public Collection<Task> getTaskList() {
+        return taskHashMap.values();
     }
 
     // получение эпиков
     @Override
-    public ArrayList<Epic> getEpicList() {
-        return new ArrayList<>(epicHashMap.values());
+    public Collection<Epic> getEpicList() {
+        return epicHashMap.values();
     }
 
     // получение сабтасков
     @Override
-    public ArrayList<Subtask> getSubTaskList() {
-        return new ArrayList<>(subtaskHashMap.values());
+    public Collection<Subtask> getSubTaskList() {
+        return subtaskHashMap.values();
     }
 
     // получение задачи по индентификатору
@@ -107,10 +104,10 @@ public class InMemoryTaskManager implements TaskManager {
     // создание сабтаска
     @Override
     public Subtask createSubTask(Subtask subtask) {
-        Epic epic = epicHashMap.get(subtask.getEpicID());
-
         subtask.setId(getNextId());
         subtaskHashMap.put(subtask.getId(), subtask);
+
+        Epic epic = epicHashMap.get(subtask.getEpicID());
         epic.addSubtask(subtask);
         updateEpicStatus(subtask.getEpicID());
 
@@ -168,7 +165,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask == null) {
             return;
         }
-
 
         Epic epic = epicHashMap.get(subtask.getEpicID());
 

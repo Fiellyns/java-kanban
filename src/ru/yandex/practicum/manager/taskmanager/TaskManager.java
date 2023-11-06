@@ -4,7 +4,7 @@ import ru.yandex.practicum.tasks.Task;
 import ru.yandex.practicum.tasks.Epic;
 import ru.yandex.practicum.tasks.Subtask;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public interface TaskManager {
@@ -14,13 +14,13 @@ public interface TaskManager {
 
 
     // получение задач
-     ArrayList<Task> getTaskList();
+    Collection<Task> getTaskList();
 
     // получение эпиков
-     ArrayList<Epic> getEpicList();
+    Collection<Epic> getEpicList();
 
     // получение сабтасков
-     ArrayList<Subtask> getSubTaskList();
+    Collection<Subtask> getSubTaskList();
 
     // получение задачи по индентификатору
      Task getTaskById(int idNumber);
