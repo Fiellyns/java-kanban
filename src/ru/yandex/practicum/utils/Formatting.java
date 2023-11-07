@@ -27,13 +27,13 @@ public class Formatting {
 
     public static Task tasksFromString(String value) {
 
-        var epicID = 0;
-        var values = value.split(",");
-        var id = Integer.parseInt(values[0]);
-        var type = values[4];
-        var name = values[1];
-        var status = Status.valueOf(values[2]);
-        var description = values[3];
+        int epicID = 0;
+        String[] values = value.split(",");
+        int id = Integer.parseInt(values[0]);
+        String type = values[1];
+        String name = values[2];
+        Status status = Status.valueOf(values[3]);
+        String description = values[4];
 
         if (TaskType.valueOf(type).equals(TaskType.SUBTASK))
             epicID = Integer.parseInt(values[5]);

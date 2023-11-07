@@ -30,10 +30,10 @@ public class Subtask extends Task {
 
     public String getAllDescription() {
         return id + ","
+                + taskType + ","
                 + name + ","
                 + status + ","
                 + description + ","
-                + taskType + ","
                 + epicID;
     }
 

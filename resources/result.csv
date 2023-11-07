@@ -1,0 +1,10 @@
+id,type,name,status,description,epic
+1,TASK,Отдых,IN_PROGRESS,поехать на море
+2,TASK,Дом,IN_PROGRESS,вынести мусор
+3,EPIC,Дом,IN_PROGRESS,любимый дом
+4,EPIC,Кот,DONE,любимый кот
+5,SUBTASK,Купить молоко,DONE,3.2%,3
+6,SUBTASK,Купить кофе,IN_PROGRESS,черный молотый,3
+7,SUBTASK,Купить корм,DONE,Royal Canin до 6 месяцев,3
+
+1,2,3,4,5,6,7,

@@ -119,11 +119,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath.toFile(), StandardCharsets.UTF_8));
              BufferedReader br = new BufferedReader(new FileReader(filePath.toFile(), StandardCharsets.UTF_8))) {
 
-            if (br.readLine() == null) {
+            // BufferedReader нужен здесь, чтобы проверять пустой ли файл,
+            // если файл пуст, то добавляется шапка id,type,name и др.
 
+            if (br.readLine() == null) {
                 String header = "id,type,name,status,description,epic" + "\n";
                 bw.write(header);
-
             }
 
             String values = Formatting.tasksToString(this) + "\n" + Formatting.historyToString(historyManager);
@@ -148,7 +149,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             for (int i = 1; i < lines.length - 2; i++) {
 
                 var task = Formatting.tasksFromString(lines[i]);
-                var type = lines[i].split(",")[4];
+                var type = lines[i].split(",")[1];
 
                 if (task.getId() > initialID)
                     initialID = task.getId();

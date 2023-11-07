@@ -39,10 +39,10 @@ public class Epic extends Task {
 
     public String getAllDescription() {
         return id + ","
+                + taskType + ","
                 + name + ","
                 + status + ","
-                + description + ","
-                + taskType;
+                + description;
 
     }
 
