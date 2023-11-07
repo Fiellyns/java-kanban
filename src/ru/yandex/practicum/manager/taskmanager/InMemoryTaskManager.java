@@ -24,6 +24,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected int id;
 
+
+
     // генератор ID
     public int getNextId(){
         return ++id;
@@ -220,29 +222,32 @@ public class InMemoryTaskManager implements TaskManager {
     // обновление эпик статуса
     private void updateEpicStatus(int id) {
         Epic epic = epicHashMap.get(id);
-        int isNew = 0;
-        int isDone = 0;
+        boolean isNew = true;
+        boolean isDone = true;
+
         if (epic.getSubtasks().isEmpty()) {
             epic.setStatus(Status.NEW);
             return;
         }
 
         for (Integer taskId : epic.getSubtasks()) {
+            Status status = subtaskHashMap.get(taskId).getStatus();
 
-            if (subtaskHashMap.get(taskId).getStatus() == Status.IN_PROGRESS) {
-                epic.setStatus(Status.IN_PROGRESS);
-                return;
-            } else if (subtaskHashMap.get(taskId).getStatus() == Status.NEW) {
-                isNew++;
-            } else if (subtaskHashMap.get(taskId).getStatus() == Status.DONE) {
-                isDone++;
+            if (status != Status.NEW) {
+                isNew = false;
+            }
+
+            if (status != Status.DONE) {
+                isDone = false;
             }
         }
 
-        if (epic.getSubtasks().size() == isNew) {
+        if (isNew) {
             epic.setStatus(Status.NEW);
-        } else if (epic.getSubtasks().size() == isDone) {
+        } else if (isDone) {
             epic.setStatus(Status.DONE);
+        } else {
+            epic.setStatus(Status.IN_PROGRESS);
         }
     }
 }

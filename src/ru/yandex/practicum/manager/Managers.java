@@ -9,16 +9,16 @@ import ru.yandex.practicum.manager.taskmanager.InMemoryTaskManager;
 public class Managers {
 
     public static TaskManager getDefault() {
-        return new InMemoryTaskManager();
+        return new FileBackedTasksManager();
     }
 
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 
-    public static FileBackedTasksManager getDefaultFileBackedManager() {
+    public static InMemoryTaskManager getDefaultInMemory() {
 
-        return new FileBackedTasksManager();
+        return new InMemoryTaskManager();
 
     }
 }

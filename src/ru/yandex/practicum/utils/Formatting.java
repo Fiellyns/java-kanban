@@ -12,13 +12,13 @@ public class Formatting {
 
     public static String tasksToString(TaskManager taskManager) {
         List<Task> allTasks = new ArrayList<>();
-        var result = new StringBuilder();
+        StringBuilder result = new StringBuilder();
 
         allTasks.addAll(taskManager.getTaskList());
         allTasks.addAll(taskManager.getEpicList());
         allTasks.addAll(taskManager.getSubTaskList());
 
-        for (var task : allTasks) {
+        for (Task task : allTasks) {
             result.append(task.getAllDescription()).append("\n");
         }
 

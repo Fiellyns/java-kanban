@@ -1,10 +1,7 @@
 package ru.yandex.practicum.manager.taskmanager;
 
-import ru.yandex.practicum.tasks.Task;
-import ru.yandex.practicum.tasks.Epic;
-import ru.yandex.practicum.tasks.Subtask;
+import ru.yandex.practicum.tasks.*;
 import ru.yandex.practicum.exceptions.ManagerSaveException;
-import ru.yandex.practicum.tasks.TaskType;
 import ru.yandex.practicum.utils.Formatting;
 import ru.yandex.practicum.manager.Managers;
 
@@ -16,7 +13,7 @@ import java.nio.file.Path;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
 
-    private static final Path filePath = Path.of("src/resources/result.csv");
+    private static final Path filePath = Path.of("resources/result.csv");
 
     @Override
     public Task createTask(Task task) {
@@ -133,12 +130,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             bw.write(values);
 
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка записи в файл");
+            throw new ManagerSaveException("Ошибка записи в файл" + e.getMessage());
         }
     }
 
     public static FileBackedTasksManager loadFromFile (Path path) {
-        var fileBackedTasksManager = Managers.getDefaultFileBackedManager();
+        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
 
         int initialID = 0;
 
@@ -160,7 +157,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 if (TaskType.valueOf(type).equals(TaskType.TASK)) {
 
                     fileBackedTasksManager.taskHashMap.put(task.getId(),task);
-//                    fileBackedTasksManager.createTask(task); // меняется id поэтому отказался
                     historyManager.add(fileBackedTasksManager.getTaskById(task.getId()));
 
                 }
@@ -168,7 +164,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 if (TaskType.valueOf(type).equals(TaskType.EPIC)) {
 
                     var epic = (Epic) task;
-//                    fileBackedTasksManager.createEpic(epic); // меняется id поэтому отказался
                     fileBackedTasksManager.epicHashMap.put(epic.getId(),epic);
                     historyManager.add(fileBackedTasksManager.getEpicById(epic.getId()));
 
@@ -183,58 +178,81 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                         Epic epicInSub = fileBackedTasksManager.epicHashMap.get(subtask.getEpicID());
                         epicInSub.getSubtasks().add(subtask.getId());
                     }
-//                    fileBackedTasksManager.createSubTask(subtask); // меняется id поэтому отказался
                     historyManager.add(fileBackedTasksManager.getSubTaskById(subtask.getId()));
 
                 }
             }
 
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка загрузки из файла");
+            throw new ManagerSaveException("Ошибка загрузки из файла: " + e.getMessage());
         }
 
         fileBackedTasksManager.id = initialID;
         return fileBackedTasksManager;
     }
 
-//    public static void main(String[] args) {
-//
-//        FileBackedTasksManager fileManagerBeforeLoading = Managers.getDefaultFileBackedManager();
-//
-//        Task task10 = fileManagerBeforeLoading.createTask(new Task("Отдых", "поехать на море"));
-//        Task task11 = fileManagerBeforeLoading.createTask(new Task("Дом", "вынести мусор"));
-//
-//        Epic epic11 = fileManagerBeforeLoading.createEpic(new Epic("Дом", "любимый дом"));
-//        Epic epic12 = fileManagerBeforeLoading.createEpic(new Epic("Кот", "любимый кот"));
-//
-//        Subtask subtask11 = fileManagerBeforeLoading.createSubTask(new Subtask("Купить молоко", "3.2%", epic11.getId()));
-//        Subtask subtask12 = fileManagerBeforeLoading.createSubTask(new Subtask("Купить кофе", "черный молотый", epic11.getId()));
-//        Subtask subtask13 = fileManagerBeforeLoading.createSubTask(new Subtask("Купить корм", "Royal Canin до 6 месяцев", epic11.getId()));
-//
-//        System.out.println(fileManagerBeforeLoading.getTaskList());
-//        System.out.println(fileManagerBeforeLoading.getEpicList());
-//        System.out.println(fileManagerBeforeLoading.getSubTaskList());
-//
-//        // get history
-//        System.out.println("Просматриваем задачи для истории.");
-//        fileManagerBeforeLoading.getTaskById(task10.getId());
-//        fileManagerBeforeLoading.getTaskById(task11.getId());
-//        fileManagerBeforeLoading.getEpicById(epic11.getId());
-//        fileManagerBeforeLoading.getEpicById(epic12.getId());
-//        fileManagerBeforeLoading.getSubTaskById(subtask11.getId());
-//        fileManagerBeforeLoading.getSubTaskById(subtask12.getId());
-//        fileManagerBeforeLoading.getSubTaskById(subtask13.getId());
-//        System.out.println("Просмотр завершён.");
-//
-//        System.out.println("Вывод истории по отдельности...");
-//        for (Task task : fileManagerBeforeLoading.getHistory()) {
-//            System.out.println(task);
-//        }
-//
-//        FileBackedTasksManager fileManagerAfterLoading = FileBackedTasksManager.loadFromFile(filePath);
-//
-//        System.out.println(fileManagerAfterLoading.getTaskList());
-//        System.out.println(fileManagerAfterLoading.getEpicList());
-//        System.out.println(fileManagerAfterLoading.getSubTaskList());
-//    }
+    public static void main(String[] args) {
+
+        TaskManager fileManagerBeforeLoading = Managers.getDefault();
+
+        Task task10 = fileManagerBeforeLoading.createTask(new Task("Отдых", "поехать на море"));
+        Task task11 = fileManagerBeforeLoading.createTask(new Task("Дом", "вынести мусор"));
+
+        Epic epic11 = fileManagerBeforeLoading.createEpic(new Epic("Дом", "любимый дом"));
+        Epic epic12 = fileManagerBeforeLoading.createEpic(new Epic("Кот", "любимый кот"));
+
+        Subtask subtask11 = fileManagerBeforeLoading.createSubTask(new Subtask("Купить молоко", "3.2%", epic11.getId()));
+        Subtask subtask12 = fileManagerBeforeLoading.createSubTask(new Subtask("Купить кофе", "черный молотый", epic11.getId()));
+        Subtask subtask13 = fileManagerBeforeLoading.createSubTask(new Subtask("Купить корм", "Royal Canin до 6 месяцев", epic11.getId()));
+
+        // Обновления статусов
+        System.out.println("Производится обновление статусов...");
+        task10.setStatus(Status.IN_PROGRESS);
+        fileManagerBeforeLoading.updateTask(task10);
+
+        subtask11.setStatus(Status.DONE);
+        fileManagerBeforeLoading.updateSubtask(subtask11);
+
+        subtask13.setStatus(Status.DONE);
+        fileManagerBeforeLoading.updateSubtask(subtask13);
+
+        subtask12.setStatus(Status.IN_PROGRESS);
+        fileManagerBeforeLoading.updateSubtask(subtask12);
+
+        task11.setStatus(Status.IN_PROGRESS);
+        fileManagerBeforeLoading.updateTask(task11);
+
+        epic12.setStatus(Status.DONE);
+        fileManagerBeforeLoading.updateEpic(epic12);
+
+        System.out.println("Обновление статусов завершено.");
+
+        System.out.println(fileManagerBeforeLoading.getTaskList());
+        System.out.println(fileManagerBeforeLoading.getEpicList());
+        System.out.println(fileManagerBeforeLoading.getSubTaskList());
+
+        // get history
+        System.out.println("Просматриваем задачи для истории.");
+        fileManagerBeforeLoading.getTaskById(task10.getId());
+        fileManagerBeforeLoading.getTaskById(task11.getId());
+        fileManagerBeforeLoading.getEpicById(epic11.getId());
+        fileManagerBeforeLoading.getEpicById(epic12.getId());
+        fileManagerBeforeLoading.getSubTaskById(subtask11.getId());
+        fileManagerBeforeLoading.getSubTaskById(subtask12.getId());
+        fileManagerBeforeLoading.getSubTaskById(subtask13.getId());
+        System.out.println("Просмотр завершён.");
+
+        System.out.println("Вывод истории по отдельности...");
+        for (Task task : fileManagerBeforeLoading.getHistory()) {
+            System.out.println(task);
+        }
+
+        FileBackedTasksManager fileManagerAfterLoading = FileBackedTasksManager.loadFromFile(filePath);
+
+        System.out.println("================================================");
+        System.out.println("После загрузки");
+        System.out.println(fileManagerAfterLoading.getTaskList());
+        System.out.println(fileManagerAfterLoading.getEpicList());
+        System.out.println(fileManagerAfterLoading.getSubTaskList());
+    }
 }
