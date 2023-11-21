@@ -1,10 +1,8 @@
-id,type,name,status,description,epic
-1,TASK,Отдых,IN_PROGRESS,поехать на море
-2,TASK,Дом,IN_PROGRESS,вынести мусор
-3,EPIC,Дом,IN_PROGRESS,любимый дом
-4,EPIC,Кот,DONE,любимый кот
-5,SUBTASK,Купить молоко,DONE,3.2%,3
-6,SUBTASK,Купить кофе,IN_PROGRESS,черный молотый,3
-7,SUBTASK,Купить корм,DONE,Royal Canin до 6 месяцев,3
+id,type,name,status,description,startTime,duration,epic
+1,TASK,Отдых,IN_PROGRESS,поехать на море,1970-01-20T16:21:32Z,1
+2,EPIC,Дом,IN_PROGRESS,любимый дом,1970-01-20T16:24:43.200Z,3
+3,SUBTASK,Купить молоко,IN_PROGRESS,3.2%,1970-01-20T16:24:43.200Z,1,2
+4,SUBTASK,Купить кофе,DONE,черный молотый,1970-01-20T16:26:09.600Z,1,2
+5,SUBTASK,Купить корм,DONE,Royal Canin до 6 месяцев,1970-01-20T16:27:36Z,1,2
 
-1,2,3,4,5,6,7,
+4,

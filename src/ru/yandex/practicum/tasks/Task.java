@@ -1,5 +1,6 @@
 package ru.yandex.practicum.tasks;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class Task {
@@ -8,23 +9,56 @@ public class Task {
     protected int id;
     protected Status status;
     protected TaskType taskType;
+    protected Instant startTime;
+    protected long duration;
 
-    public Task(String name, String description) {
+    public Task (String name,
+                 String description,
+                 Status status,
+                 Long duration,
+                 Instant startTime) {
         this.name = name;
         this.description = description;
-        this.status = Status.NEW;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
         this.taskType = TaskType.TASK;
     }
 
     public Task (int id,
                  String name,
+                 String description,
                  Status status,
-                 String description) {
+                 Long duration,
+                 Instant startTime) {
         this.id = id;
         this.name = name;
-        this.status = status;
         this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
         this.taskType = TaskType.TASK;
+    }
+
+    public Instant getEndTime() {
+        long seconds = 60L;
+        return startTime.plusSeconds(duration * seconds);
+    }
+
+    public Instant getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Instant startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public String getName() {
@@ -64,8 +98,11 @@ public class Task {
                 + taskType + ","
                 + name + ","
                 + status + ","
-                + description;
+                + description + ","
+                + getStartTime() + ","
+                + duration;
     }
+
 
     @Override
     public String toString() {
@@ -74,15 +111,17 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
+                ", taskType=" + taskType +
+                ", startTime=" + getStartTime().toEpochMilli() +
+                ", duration=" + duration +
+                ", endTime=" + getEndTime().toEpochMilli() +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Task)) return false;
-
-        Task that = (Task) o;
+        if (!(o instanceof Task that)) return false;
 
         return Objects.equals(this.name, that.name)
                 && Objects.equals(this.description, that.description)

@@ -8,8 +8,8 @@ import ru.yandex.practicum.manager.taskmanager.InMemoryTaskManager;
 
 public class Managers {
 
-    public static TaskManager getDefault() {
-        return new FileBackedTasksManager();
+    public static TaskManager getDefault(String path) {
+        return new FileBackedTasksManager(path);
     }
 
     public static HistoryManager getDefaultHistory() {
@@ -19,6 +19,11 @@ public class Managers {
     public static InMemoryTaskManager getDefaultInMemory() {
 
         return new InMemoryTaskManager();
+    }
+
+    public static FileBackedTasksManager getDefaultFileBackedManager(String path) {
+
+        return new FileBackedTasksManager(path);
 
     }
 }

@@ -19,15 +19,15 @@ public class InMemoryHistoryManager implements HistoryManager {
     // добавление таска
     @Override
     public void add(Task task) {
-        Node<Task> node = customLinkedList.linkLast(task);
-        int id = task.getId();
+        if (task != null) {
+            Node<Task> node = customLinkedList.linkLast(task);
 
-        if (historyManagersMap.containsKey(id)) {
-            remove(id);
+            if (historyManagersMap.containsKey(task.getId())) {
+                customLinkedList.removeNode(historyManagersMap.get(task.getId()));
+            }
+
+            historyManagersMap.put(task.getId(), node);
         }
-
-        historyManagersMap.put(id, node);
-
     }
 
     // очистка истории

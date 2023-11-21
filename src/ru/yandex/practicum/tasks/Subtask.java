@@ -1,24 +1,31 @@
 package ru.yandex.practicum.tasks;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class Subtask extends Task {
     private int epicID;
 
-    public Subtask(String name, String description, int epicID) {
-        super(name, description);
-        this.epicID = epicID;
+
+    public Subtask (String name,
+                    String description,
+                    Status status,
+                    Long duration,
+                    Instant startTime,
+                    int epicID) {
+        super(name, description, status, duration, startTime);
         this.taskType = TaskType.SUBTASK;
+        this.epicID = epicID;
     }
 
     public Subtask (int id,
                     String name,
-                    Status status,
                     String description,
+                    Status status,
+                    Long duration,
+                    Instant startTime,
                     int epicID) {
-        super(name, description);
-        this.id = id;
-        this.status = status;
+        super(id, name, description, status, duration, startTime);
         this.taskType = TaskType.SUBTASK;
         this.epicID = epicID;
     }
@@ -34,26 +41,32 @@ public class Subtask extends Task {
                 + name + ","
                 + status + ","
                 + description + ","
+                + getStartTime() + ","
+                + duration + ","
                 + epicID;
     }
+
 
     @Override
     public String toString() {
         return "Subtask{" +
-                "name='" + name + '\'' +
+                "epicID=" + epicID +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
+                ", taskType=" + taskType +
+                ", startTime=" + getStartTime().toEpochMilli() +
+                ", duration=" + duration +
+                ", endTime=" + getEndTime().toEpochMilli() +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Subtask)) return false;
+        if (!(o instanceof Subtask that)) return false;
         if (!super.equals(o)) return false;
-
-        Subtask that = (Subtask) o;
 
         return Objects.equals(this.epicID, that.epicID);
     }

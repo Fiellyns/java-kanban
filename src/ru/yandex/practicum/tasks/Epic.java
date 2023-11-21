@@ -1,31 +1,49 @@
 package ru.yandex.practicum.tasks;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private ArrayList<Integer> subtasks;
+    private final List<Integer> subtasks = new ArrayList<>();
+    private Instant endTime;
 
-    public Epic(String name, String description) {
-        super(name, description);
+
+    public Epic(String name,
+                String description,
+                Status status,
+                Long duration,
+                Instant startTime) {
+
+        super(name, description, status, duration, startTime);
         this.taskType = TaskType.EPIC;
-        this.subtasks = new ArrayList<>();
+        this.endTime = super.getEndTime();
     }
 
     public Epic(int id,
                 String name,
+                String description,
                 Status status,
-                String description) {
+                Long duration,
+                Instant startTime) {
 
-        super(name, description);
-        this.subtasks = new ArrayList<>();
+        super(id, name, description, status, duration, startTime);
         this.taskType = TaskType.EPIC;
-        this.status = status;
-        this.id = id;
-
+        this.endTime = super.getEndTime();
     }
 
-    public ArrayList<Integer> getSubtasks() {
+
+    @Override
+    public Instant getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Instant endTime) {
+        this.endTime = endTime;
+    }
+
+    public List<Integer> getSubtasks() {
         return subtasks;
     }
 
@@ -42,28 +60,31 @@ public class Epic extends Task {
                 + taskType + ","
                 + name + ","
                 + status + ","
-                + description;
-
+                + description + ","
+                + getStartTime() + ","
+                + duration;
     }
 
     @Override
     public String toString() {
         return "Epic{" +
-                "name='" + name + '\'' +
+                "subtasks=" + subtasks +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
-                ", subtasks=" + subtasks +
+                ", taskType=" + taskType +
+                ", startTime=" + getStartTime().toEpochMilli() +
+                ", duration=" + duration +
+                ", endTime=" + getEndTime().toEpochMilli() +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Epic)) return false;
+        if (!(o instanceof Epic that)) return false;
         if (!super.equals(o)) return false;
-
-        Epic that = (Epic) o;
 
         return Objects.equals(this.subtasks, that.subtasks);
     }

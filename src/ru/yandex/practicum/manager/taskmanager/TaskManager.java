@@ -4,6 +4,7 @@ import ru.yandex.practicum.tasks.Task;
 import ru.yandex.practicum.tasks.Epic;
 import ru.yandex.practicum.tasks.Subtask;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,6 +13,8 @@ public interface TaskManager {
     // генератор ID
     int getNextId();
 
+    // получение списка и форматирование его в ArrayList
+    List<Task> getPrioritizedTasks();
 
     // получение задач
     Collection<Task> getTaskList();

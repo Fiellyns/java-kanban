@@ -4,6 +4,7 @@ import ru.yandex.practicum.manager.historymanager.HistoryManager;
 import ru.yandex.practicum.manager.taskmanager.TaskManager;
 import ru.yandex.practicum.tasks.*;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +35,20 @@ public class Formatting {
         String name = values[2];
         Status status = Status.valueOf(values[3]);
         String description = values[4];
+        Instant startTime = Instant.parse(values[5]);
+        Long duration = Long.parseLong(values[6]);
 
         if (TaskType.valueOf(type).equals(TaskType.SUBTASK))
-            epicID = Integer.parseInt(values[5]);
+            epicID = Integer.parseInt(values[7]);
 
         if (TaskType.valueOf(type).equals(TaskType.TASK))
-            return new Task(id, name, status, description);
+            return new Task(id, name, description, status, duration, startTime);
 
         if (TaskType.valueOf(type).equals(TaskType.EPIC))
-            return new Epic(id, name, status, description);
+            return new Epic(id, name, description, status, duration, startTime);
 
         if (TaskType.valueOf(type).equals(TaskType.SUBTASK))
-            return new Subtask(id, name, status, description, epicID);
+            return new Subtask(id, name, description, status, duration, startTime, epicID);
 
         else
             throw new IllegalArgumentException("Данный формат таска не поддерживается");
