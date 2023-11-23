@@ -16,19 +16,25 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected Task newTask() {
         return new Task("Отдых", "поехать на море",
                 Status.NEW, 1L,
-                Instant.EPOCH);
+                Instant.ofEpochMilli(1700492000L));
     }
 
     protected Epic newEpic() {
         return new Epic("Дом", "любимый дом",
                 Status.NEW, 1L,
-                Instant.EPOCH);
+                Instant.ofEpochMilli(1700492500L));
     }
 
     protected Subtask newSubtask(Epic epic) {
         return new Subtask("Купить молоко", "3.2%",
                 Status.NEW, 1L,
-                Instant.EPOCH, epic.getId());
+                Instant.ofEpochMilli(1700683200L), epic.getId());
+    }
+
+    protected Subtask newSubtask2(Epic epic) {
+        return new Subtask("Купить молоко", "3.2%",
+                Status.NEW, 1L,
+                Instant.ofEpochMilli(1700769600L), epic.getId());
     }
 
 
@@ -415,10 +421,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void shouldUpdateEpicToStatusIN_PROGRESSWithTwoSubtasks(){
+    void shouldUpdateEpicToStatusIN_PROGRESSWithTwoSubtasksDoneAndInProgress(){
         Epic epic = taskManager.createEpic(newEpic());
         Subtask subtask = taskManager.createSubTask(newSubtask(epic));
-        Subtask subtask2 = taskManager.createSubTask(newSubtask(epic));
+        Subtask subtask2 = taskManager.createSubTask(newSubtask2(epic));
 
         subtask.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask);
@@ -430,10 +436,25 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void shouldUpdateEpicToStatusNewWithTwoSubtasks(){
+    void shouldUpdateEpicToStatusIN_PROGRESSWithTwoSubtasksNewAndDone(){
         Epic epic = taskManager.createEpic(newEpic());
         Subtask subtask = taskManager.createSubTask(newSubtask(epic));
-        Subtask subtask2 = taskManager.createSubTask(newSubtask(epic));
+        Subtask subtask2 = taskManager.createSubTask(newSubtask2(epic));
+
+        subtask.setStatus(Status.DONE);
+        taskManager.updateSubtask(subtask);
+        subtask2.setStatus(Status.NEW);
+        taskManager.updateSubtask(subtask2);
+
+
+        assertEquals(Status.IN_PROGRESS, epic.getStatus());
+    }
+
+    @Test
+    void shouldUpdateEpicToStatusNewWithTwoSubtasksNew(){
+        Epic epic = taskManager.createEpic(newEpic());
+        Subtask subtask = taskManager.createSubTask(newSubtask(epic));
+        Subtask subtask2 = taskManager.createSubTask(newSubtask2(epic));
 
         assertEquals(Status.NEW, epic.getStatus());
     }

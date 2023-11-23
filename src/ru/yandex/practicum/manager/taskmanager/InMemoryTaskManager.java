@@ -1,10 +1,7 @@
 package ru.yandex.practicum.manager.taskmanager;
 
 import ru.yandex.practicum.exceptions.IntersectionException;
-import ru.yandex.practicum.tasks.Status;
-import ru.yandex.practicum.tasks.Task;
-import ru.yandex.practicum.tasks.Epic;
-import ru.yandex.practicum.tasks.Subtask;
+import ru.yandex.practicum.tasks.*;
 import ru.yandex.practicum.manager.Managers;
 import ru.yandex.practicum.manager.historymanager.HistoryManager;
 
@@ -12,7 +9,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
+public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> taskHashMap;
     protected final Map<Integer, Epic> epicHashMap;
     protected final Map<Integer, Subtask> subtaskHashMap;
@@ -24,17 +21,14 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
         this.epicHashMap = new HashMap<>();
         this.subtaskHashMap = new HashMap<>();
         historyManager = Managers.getDefaultHistory();
-        prioritizedTasks = new TreeSet<>(this);
+        prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
     }
-
-
 
     protected int id;
 
 
-
     // генератор ID
-    public int getNextId(){
+    public int getNextId() {
         return ++id;
     }
 
@@ -68,18 +62,13 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
             Instant startTime = taskValue.getStartTime();
             Instant endTime = taskValue.getEndTime();
-            boolean isIntersect = startTime.isBefore(startOfTask) && endTime.isAfter(endOfTask);
-            boolean isIntersectByEnd = startTime.isBefore(startOfTask) && endTime.isAfter(startOfTask);
-            boolean isIntersectByStart = startTime.isBefore(endOfTask) && endTime.isAfter(endOfTask);
-            boolean isWithIn = startTime.isAfter(startOfTask) && endTime.isBefore(endOfTask);
-            isValidate = isIntersect || isIntersectByEnd || isIntersectByStart || isWithIn;
+
+            isValidate = endOfTask.isAfter(startTime) && startOfTask.isBefore(endTime);
+            if (isValidate) {
+                return isValidate;
+            }
         }
         return isValidate;
-    }
-
-    @Override
-    public int compare(Task o1, Task o2) {
-        return o1.getStartTime().compareTo(o2.getStartTime());
     }
 
     // получение задач
@@ -204,8 +193,8 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
     public void deleteTasks() {
         for (Integer taskId : taskHashMap.keySet()) { // очистка из истории
             historyManager.remove(taskId);
-            prioritizedTasks.removeIf(task -> task.getId() == taskId);
         }
+        prioritizedTasks.removeIf(task -> task.getTaskType() == TaskType.TASK);
         taskHashMap.clear();
     }
 
@@ -220,8 +209,8 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
         for (Integer subTaskId : subtaskHashMap.keySet()) { // очистка из истории
             historyManager.remove(subTaskId);
-            prioritizedTasks.removeIf(task -> Objects.equals(task.getId(), subTaskId));
         }
+        prioritizedTasks.removeIf(task -> task.getTaskType() == TaskType.SUBTASK);
         subtaskHashMap.clear(); // очищается мапа
     }
 
@@ -234,6 +223,7 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
         for (Integer epicId : epicHashMap.keySet()) { // очистка из истории
             historyManager.remove(epicId);
         }
+        prioritizedTasks.removeIf(task -> task.getTaskType() == TaskType.SUBTASK);
         epicHashMap.clear();
         subtaskHashMap.clear();
     }
@@ -289,6 +279,7 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
     public void updateTask(Task task) {
         if (task != null && taskHashMap.containsKey(task.getId())) {
             taskHashMap.put(task.getId(), task);
+            prioritizedTasks.removeIf(prioritizedTask -> prioritizedTask.equals(task));
             addToPrioritizedTasks(task);
         }
     }
@@ -298,6 +289,7 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
     public void updateSubtask(Subtask subtask) {
         if (subtask != null && subtaskHashMap.containsKey(subtask.getId())) {
             subtaskHashMap.put(subtask.getId(), subtask);
+            prioritizedTasks.removeIf(prioritizedTask -> prioritizedTask.equals(subtask));
             addToPrioritizedTasks(subtask);
             updateEpicStatus(subtask.getEpicID());
             updateEpicTime(subtask.getEpicID());

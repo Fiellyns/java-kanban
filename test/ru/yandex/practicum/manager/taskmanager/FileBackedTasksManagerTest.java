@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
-    private final Path path = Path.of("test/ru/yandex/practicum/resources/result.csv");
+    private final Path path = Path.of("resources/resultTest.csv");
 
     @BeforeEach
     void beforeEach() {
-        taskManager = Managers.getDefaultFileBackedManager(path.toString());
+        taskManager = (FileBackedTasksManager) Managers.getDefault(path.toString());
     }
 
     @AfterEach

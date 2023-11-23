@@ -2,6 +2,7 @@ package ru.yandex.practicum.tasks;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.time.temporal.ChronoUnit;
 
 public class Task {
     protected String name;
@@ -41,12 +42,15 @@ public class Task {
     }
 
     public Instant getEndTime() {
-        long seconds = 60L;
-        return startTime.plusSeconds(duration * seconds);
+        return startTime.plus(duration, ChronoUnit.MINUTES);
     }
 
     public Instant getStartTime() {
         return startTime;
+    }
+
+    public TaskType getTaskType() {
+        return taskType;
     }
 
     public void setStartTime(Instant startTime) {
@@ -121,8 +125,8 @@ public class Task {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Task that)) return false;
-
+        if (!(o instanceof Task)) return false;
+        Task that = (Task) o;
         return Objects.equals(this.name, that.name)
                 && Objects.equals(this.description, that.description)
                 && Objects.equals(this.id, that.id)
