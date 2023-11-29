@@ -71,5 +71,4 @@ public interface TaskManager {
 
     // обновление эпика
     void updateEpic(Epic epic);
-
 }

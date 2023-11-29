@@ -1,5 +1,8 @@
 package ru.yandex.practicum.tasks;
 
+import ru.yandex.practicum.utils.Status;
+import ru.yandex.practicum.utils.TaskType;
+
 import java.time.Instant;
 import java.util.Objects;
 import java.time.temporal.ChronoUnit;

@@ -3,6 +3,7 @@ package ru.yandex.practicum.manager.taskmanager;
 import ru.yandex.practicum.tasks.*;
 import ru.yandex.practicum.exceptions.ManagerSaveException;
 import ru.yandex.practicum.utils.Formatting;
+import ru.yandex.practicum.utils.TaskType;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -12,10 +13,10 @@ import java.nio.file.Path;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
 
-    private final Path filePath;
+    private final File file;
 
     public FileBackedTasksManager(String path) {
-        this.filePath = Path.of(path);
+        this.file = new File(path);
     }
 
     @Override
@@ -119,8 +120,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     protected void save() {
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath.toFile(), StandardCharsets.UTF_8));
-             BufferedReader br = new BufferedReader(new FileReader(filePath.toFile(), StandardCharsets.UTF_8))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8));
+             BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
 
             // BufferedReader нужен здесь, чтобы проверять пустой ли файл,
             // если файл пуст, то добавляется шапка id,type,name и др.

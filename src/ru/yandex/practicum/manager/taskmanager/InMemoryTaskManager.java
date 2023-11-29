@@ -4,6 +4,8 @@ import ru.yandex.practicum.exceptions.IntersectionException;
 import ru.yandex.practicum.tasks.*;
 import ru.yandex.practicum.manager.Managers;
 import ru.yandex.practicum.manager.historymanager.HistoryManager;
+import ru.yandex.practicum.utils.Status;
+import ru.yandex.practicum.utils.TaskType;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -105,7 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int idNumber) {
         Task task = taskHashMap.get(idNumber);
-        if (task != null && taskHashMap.containsKey(id)) {
+        if (task != null && taskHashMap.containsKey(idNumber)) {
             historyManager.add(task);
         } else {
             return null;
@@ -117,7 +119,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(int idNumber) {
         Epic epic = epicHashMap.get(idNumber);
-        if (epic != null && epicHashMap.containsKey(id)) {
+        if (epic != null && epicHashMap.containsKey(idNumber)) {
             historyManager.add(epic);
         } else {
             return null;
@@ -129,7 +131,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubTaskById(int idNumber) {
         Subtask subtask = subtaskHashMap.get(idNumber);
-        if (subtask != null && subtaskHashMap.containsKey(id)) {
+        if (subtask != null && subtaskHashMap.containsKey(idNumber)) {
             historyManager.add(subtask);
         } else {
             return null;

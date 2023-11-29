@@ -10,13 +10,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\test\ru\yandex\practicum\manager\resources\result.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
       </map>
     </option>
   </component>

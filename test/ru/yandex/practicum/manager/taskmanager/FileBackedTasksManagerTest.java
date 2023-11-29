@@ -2,7 +2,6 @@ package ru.yandex.practicum.manager.taskmanager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.manager.taskmanager.FileBackedTasksManager;
 import ru.yandex.practicum.manager.Managers;
 import ru.yandex.practicum.tasks.Epic;
 import ru.yandex.practicum.tasks.Subtask;
@@ -23,7 +22,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @BeforeEach
     void beforeEach() {
-        taskManager = (FileBackedTasksManager) Managers.getDefault(path.toString());
+        taskManager = Managers.getDefaultFileBackedTasksManager(path.toString());
     }
 
     @AfterEach

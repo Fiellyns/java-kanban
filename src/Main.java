@@ -1,97 +1,64 @@
 import ru.yandex.practicum.manager.Managers;
-import ru.yandex.practicum.manager.taskmanager.FileBackedTasksManager;
-import ru.yandex.practicum.manager.taskmanager.TaskManager;
+import ru.yandex.practicum.manager.taskmanager.HttpTaskManager;
+import ru.yandex.practicum.server.HttpTaskServer;
+import ru.yandex.practicum.server.KVServer;
 import ru.yandex.practicum.tasks.Task;
 import ru.yandex.practicum.tasks.Subtask;
 import ru.yandex.practicum.tasks.Epic;
-import ru.yandex.practicum.tasks.Status;
+import ru.yandex.practicum.utils.Status;
 
+import java.io.IOException;
 import java.time.Instant;
 
 public class Main {
-        public static void main(String[] args) {
-            TaskManager taskManager = Managers.getDefault("resources/result.csv");
+        public static void main(String[] args) throws IOException {
+            new KVServer().start();
 
-            Task task1 = taskManager.createTask(new Task("Отдых", "поехать на море",
+            HttpTaskManager httpTaskManager = (HttpTaskManager) Managers.getDefault("http://localhost:8078");
+            new HttpTaskServer(httpTaskManager).start();
+
+            Task task = httpTaskManager.createTask(new Task("Отдых", "поехать на море",
                     Status.NEW, 1L, Instant.ofEpochMilli(1700492000L)));
 
 
-            Epic epic1 = taskManager.createEpic(new Epic("Дом", "любимый дом",
+            Epic epic1 = httpTaskManager.createEpic(new Epic("Дом", "любимый дом",
                     Status.NEW, 1L, Instant.ofEpochMilli(1700492500L)));
 
 
-            Subtask subtask1 = taskManager.createSubTask(new Subtask("Купить молоко", "3.2%",
+            Subtask subtask1 = httpTaskManager.createSubTask(new Subtask("Купить молоко", "3.2%",
                     Status.NEW, 1L, Instant.ofEpochMilli(1700683200L), epic1.getId()));
 
 
-            Subtask subtask2 = taskManager.createSubTask(new Subtask("Купить кофе", "черный молотый",
+            Subtask subtask2 = httpTaskManager.createSubTask(new Subtask("Купить кофе", "черный молотый",
                     Status.NEW, 1L, Instant.ofEpochMilli(1700769600L), epic1.getId()));
 
 
-            Subtask subtask3 = taskManager.createSubTask(new Subtask("Купить корм", "Royal Canin до 6 месяцев",
+            Subtask subtask3 = httpTaskManager.createSubTask(new Subtask("Купить корм", "Royal Canin до 6 месяцев",
                     Status.NEW, 1L, Instant.ofEpochMilli(1700856000L), epic1.getId()));
 
-
-            // Вывод всего
-
-            System.out.println(taskManager.getTaskList());
-            System.out.println(taskManager.getEpicList());
-            System.out.println(taskManager.getSubTaskList());
+            httpTaskManager.getSubTaskById(subtask1.getId());
+            httpTaskManager.getTaskById(task.getId());
 
 
-            // Обновления статусов
-            System.out.println("Производится обновление статусов...");
-            subtask1.setStatus(Status.IN_PROGRESS);
-            taskManager.updateSubtask(subtask1);
 
-            subtask2.setStatus(Status.DONE);
-            taskManager.updateSubtask(subtask2);
+            System.out.println("\n=========================================================");
+            System.out.println(httpTaskManager.getTaskList());
+            System.out.println(httpTaskManager.getSubTaskList());
+            System.out.println(httpTaskManager.getEpicList());
+            System.out.println(httpTaskManager.getHistory());
+            System.out.println(httpTaskManager.getPrioritizedTasks());
+            System.out.println("=========================================================");
 
-            subtask3.setStatus(Status.DONE);
-            taskManager.updateSubtask(subtask3);
+            httpTaskManager.loadFromServer();
 
-            task1.setStatus(Status.IN_PROGRESS);
-            taskManager.updateTask(task1);
-
-
-            System.out.println("Обновление статусов завершено.");
-
-            // Вывод всего
-            System.out.println(taskManager.getTaskList());
-            System.out.println(taskManager.getEpicList());
-            System.out.println(taskManager.getSubTaskList());
+            System.out.println("\n=========================================================");
+            System.out.println(httpTaskManager.getTaskList());
+            System.out.println(httpTaskManager.getSubTaskList());
+            System.out.println(httpTaskManager.getEpicList());
+            System.out.println(httpTaskManager.getHistory());
+            System.out.println(httpTaskManager.getPrioritizedTasks());
+            System.out.println("=========================================================");
 
 
-            // Вывод всего
-            System.out.println(taskManager.getTaskList());
-            System.out.println(taskManager.getEpicList());
-            System.out.println(taskManager.getSubTaskList());
-
-
-            // get history
-            System.out.println("Просматриваем задачи для истории.");
-            taskManager.getTaskById(task1.getId());
-            taskManager.getTaskById(task1.getId());
-            taskManager.getEpicById(epic1.getId());
-            taskManager.getTaskById(task1.getId());
-            taskManager.getTaskById(task1.getId());
-            taskManager.getTaskById(task1.getId());
-            taskManager.getSubTaskById(subtask2.getId());
-            System.out.println("Просмотр завершён.");
-
-            System.out.println("Вывод истории по отдельности...");
-            for (Task task : taskManager.getHistory()) {
-                System.out.println(task);
-            }
-
-            System.out.println("Вывод истории по отдельности...");
-            for (Task task : taskManager.getHistory()) {
-                System.out.println(task);
-            }
-
-            System.out.println("Вывод приоритетного списка по отдельности...");
-            for (Task task : taskManager.getPrioritizedTasks()) {
-                System.out.println(task);
-            }
         }
     }

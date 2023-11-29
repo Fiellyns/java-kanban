@@ -1,5 +1,7 @@
 package ru.yandex.practicum.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import ru.yandex.practicum.manager.historymanager.HistoryManager;
 import ru.yandex.practicum.manager.taskmanager.TaskManager;
 import ru.yandex.practicum.tasks.*;
@@ -74,7 +76,12 @@ public class Formatting {
             history.add(Integer.parseInt(line));
 
         return history;
-
     }
 
+    public static Gson createGson() {
+
+        return new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantAdapter())
+                .create();
+    }
 }
