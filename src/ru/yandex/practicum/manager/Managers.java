@@ -6,22 +6,15 @@ import ru.yandex.practicum.manager.taskmanager.FileBackedTasksManager;
 import ru.yandex.practicum.manager.taskmanager.HttpTaskManager;
 import ru.yandex.practicum.manager.taskmanager.TaskManager;
 import ru.yandex.practicum.manager.taskmanager.InMemoryTaskManager;
-import ru.yandex.practicum.server.KVTaskClient;
-
-import java.nio.file.Path;
 
 public class Managers {
 
     public static TaskManager getDefault(String url) {
-        return new HttpTaskManager(url, new KVTaskClient(url));
+        return new HttpTaskManager(url);
     }
 
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
-    }
-
-    public static InMemoryTaskManager getDefaultInMemory() {
-        return new InMemoryTaskManager();
     }
 
     public static FileBackedTasksManager getDefaultFileBackedTasksManager(String url) {

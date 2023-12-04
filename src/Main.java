@@ -12,10 +12,12 @@ import java.time.Instant;
 
 public class Main {
         public static void main(String[] args) throws IOException {
-            new KVServer().start();
 
+            KVServer kvServer = new KVServer();
+            kvServer.start();
             HttpTaskManager httpTaskManager = (HttpTaskManager) Managers.getDefault("http://localhost:8078");
-            new HttpTaskServer(httpTaskManager).start();
+            HttpTaskServer httpTaskServer = new HttpTaskServer(httpTaskManager);
+            httpTaskServer.start();
 
             Task task = httpTaskManager.createTask(new Task("Отдых", "поехать на море",
                     Status.NEW, 1L, Instant.ofEpochMilli(1700492000L)));
@@ -49,16 +51,17 @@ public class Main {
             System.out.println(httpTaskManager.getPrioritizedTasks());
             System.out.println("=========================================================");
 
-            httpTaskManager.loadFromServer();
+            HttpTaskManager httpTaskManagerAfterLoad = (HttpTaskManager) Managers.getDefault("http://localhost:8078");
+            httpTaskManagerAfterLoad.loadFromServer();
 
             System.out.println("\n=========================================================");
-            System.out.println(httpTaskManager.getTaskList());
-            System.out.println(httpTaskManager.getSubTaskList());
-            System.out.println(httpTaskManager.getEpicList());
-            System.out.println(httpTaskManager.getHistory());
-            System.out.println(httpTaskManager.getPrioritizedTasks());
+            System.out.println(httpTaskManagerAfterLoad.getTaskList());
+            System.out.println(httpTaskManagerAfterLoad.getSubTaskList());
+            System.out.println(httpTaskManagerAfterLoad.getEpicList());
+            System.out.println(httpTaskManagerAfterLoad.getHistory());
+            System.out.println(httpTaskManagerAfterLoad.getPrioritizedTasks());
             System.out.println("=========================================================");
-
-
+            httpTaskServer.stop();
+            kvServer.stop();
         }
     }

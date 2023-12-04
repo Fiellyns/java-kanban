@@ -2,7 +2,6 @@ package ru.yandex.practicum.manager.taskmanager;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import ru.yandex.practicum.manager.historymanager.HistoryManager;
 import ru.yandex.practicum.server.KVTaskClient;
 import ru.yandex.practicum.tasks.*;
 import ru.yandex.practicum.utils.Formatting;
@@ -14,9 +13,9 @@ public class HttpTaskManager extends FileBackedTasksManager {
     private final KVTaskClient taskClient;
     private final Gson gson;
 
-    public HttpTaskManager(String url, KVTaskClient taskClient) {
+    public HttpTaskManager(String url) {
         super(url);
-        this.taskClient = taskClient;
+        this.taskClient = new KVTaskClient(url);
         gson = Formatting.createGson();
     }
 
@@ -31,8 +30,8 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     public void loadFromServer() {
         loadTasks("task");
-        loadTasks("subtask");
         loadTasks("epic");
+        loadTasks("subtask");
         loadHistory();
     }
 
@@ -46,15 +45,17 @@ public class HttpTaskManager extends FileBackedTasksManager {
             switch (key) {
                 case "task":
                     task = gson.fromJson(element.getAsJsonObject(), Task.class);
-                    createTask(task);
+                    taskHashMap.put(task.getId(), task);
+                    addToPrioritizedTasks(task);
                     break;
                 case "subtask":
                     subtask = gson.fromJson(element.getAsJsonObject(), Subtask.class);
-                    createSubTask(subtask);
+                    subtaskHashMap.put(subtask.getId(), subtask);
+                    addToPrioritizedTasks(subtask);
                     break;
                 case "epic":
                     epic = gson.fromJson(element.getAsJsonObject(), Epic.class);
-                    createEpic(epic);
+                    epicHashMap.put(epic.getId(), epic);
                     break;
                 default:
                     System.out.println("Невозможно загрузить задачи");

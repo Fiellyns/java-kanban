@@ -39,12 +39,13 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager>{
         taskManager.getTaskById(task.getId());
         taskManager.getEpicById(epic.getId());
         taskManager.getSubTaskById(subtask.getId());
-        taskManager.loadFromServer();
+        HttpTaskManager httpTaskManagerAfterLoad = (HttpTaskManager) Managers.getDefault(url);
+        httpTaskManagerAfterLoad.loadFromServer();
 
-        List<Task> taskList = new ArrayList<>(taskManager.getTaskList());
-        List<Task> subtaskList = new ArrayList<>(taskManager.getSubTaskList());
-        List<Task> epicList = new ArrayList<>(taskManager.getEpicList());
-        List<Task> historyList = new ArrayList<>(taskManager.getHistory());
+        List<Task> taskList = new ArrayList<>(httpTaskManagerAfterLoad.getTaskList());
+        List<Task> subtaskList = new ArrayList<>(httpTaskManagerAfterLoad.getSubTaskList());
+        List<Task> epicList = new ArrayList<>(httpTaskManagerAfterLoad.getEpicList());
+        List<Task> historyList = new ArrayList<>(httpTaskManagerAfterLoad.getHistory());
 
         assertEquals(List.of(task), taskList);
         assertEquals(List.of(subtask), subtaskList);
